@@ -8,7 +8,7 @@ defmodule Indulgences.Application do
       {Task.Supervisor, name: Indulgences.TaskSupervisor}
     ]
 
-    opts = [strategy: :one_for_one, name: Indulgences.TaskSupervisor]
+    opts = [strategy: :one_for_one, name: Indulgences.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end
