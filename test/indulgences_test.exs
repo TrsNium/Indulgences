@@ -38,7 +38,7 @@ defmodule IndulgencesTest do
               Map.get(state, :body)
             end)
       end)
-
+    Indulgences.Engine.exute_scenario(test_scenario)
   end
 
   test "request_option update headers" do
