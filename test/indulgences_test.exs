@@ -7,6 +7,18 @@ defmodule IndulgencesTest do
   end
 
   test "scenario" do
+    test_scenario = Indulgences.Scenario.new("test_scenario",
+      fn ->
+        Indulgences.Http.get("http://www.google.com")
+        |> Indulgences.Http.set_header("hoge", "huga")
+        |> Indulgences.Http.check(
+          fn(%HTTPoison.Response{}=response, %{}=state)->
+            assert response.status_code == 200
+            state
+            |> Map.put(:body, response.body)
+          end)
+      end)
+    Indulgences.Engine.exute_scenario(test_scenario)
   end
 
   test "request_option update headers" do

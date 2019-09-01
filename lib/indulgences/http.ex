@@ -3,8 +3,9 @@
 defmodule Indulgences.Http do
   alias Indulgences.Http.RequestOptions
 
+  @dialyzer {:nowarn_function, {:get, 4}}
 
-  def get(_ \\[], url, headers \\ [], options \\ []) do
+  def get(_ \\[], url , headers \\ [], options \\ []) do
     [%RequestOptions{method: :get!, url: url, headers: headers, options: options}]
   end
 

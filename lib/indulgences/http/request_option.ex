@@ -4,7 +4,6 @@ defmodule Indulgences.Http.RequestOptions do
 
   def update_header(%__MODULE__{}=option, key, value) do
     headers = option.headers
-    IO.puts inspect(Enum.find_index(headers, fn {exist_key, _} -> exist_key == key end))
     new_headers = case Enum.find_index(headers, fn {exist_key, _} -> exist_key == key end) do
       idx when is_integer(idx)-> List.delete_at(headers, idx) ++ [{key, value}]
       _ -> headers ++ [{key, value}]
