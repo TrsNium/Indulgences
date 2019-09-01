@@ -2,14 +2,13 @@
 defmodule Indulgences.Engine do
   alias Indulgences.Scenario
   alias Indulgences.Http.RequestOptions
+  alias Indulgences.Http.RequestOptions.Evaluter
 
-  def execute([], state) do
-    IO.puts inspect state
-  end
+  def execute([], _), do: nil
 
   def execute([%RequestOptions{}=option | options], %{}=state) do
-    result = apply(HTTPoison, option.method, [option.url, option.headers, option.options])
-    IO.puts inspect option
+    evaluted_option = Evaluter.evalute_request_option(option, state)
+    result = apply(HTTPoison, evaluted_option.method, [evaluted_option.url, evaluted_option.headers, evaluted_option.options])
     new_state = if option.check != nil do
       # Find the number of function arguments(:arity)
       case Keyword.get(Function.info(option.check), :arity) do
