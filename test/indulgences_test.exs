@@ -18,7 +18,7 @@ defmodule IndulgencesTest do
             |> Map.put(:body, response.body)
           end)
       end)
-    Indulgences.Engine.exute_scenario(test_scenario)
+    Indulgences.Scenario.Engine.execute_scenario(test_scenario)
   end
 
   test "flexible scenario execute engine " do
@@ -38,7 +38,7 @@ defmodule IndulgencesTest do
               Map.get(state, :body)
             end)
       end)
-    Indulgences.Engine.exute_scenario(test_scenario)
+    Indulgences.Scenario.Engine.execute_scenario(test_scenario)
   end
 
   test "request_option update headers" do
