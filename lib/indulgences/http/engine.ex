@@ -1,19 +1,18 @@
 
 defmodule Indulgences.Http.Engine do
-  alias Indulgences.Scenario
-  alias Indulgences.Http.RequestOptions
-  alias Indulgences.Http.RequestOptions.Evaluter
+  alias Indulgences.Http
+  alias Indulgences.Http.Evaluter
 
-  def execute(%RequestOptions{}=option, %{}=state) do
-    evaluted_option = Evaluter.evalute_request_option(option, state)
-    result = apply(HTTPoison, evaluted_option.method, [evaluted_option.url, evaluted_option.headers, evaluted_option.options])
-    new_state = if option.check != nil do
+  def execute(%Http{}=http, %{}=state) do
+    evaluted_http = Evaluter.evalute_http(http, state)
+    result = apply(HTTPoison, evaluted_http.method, [evaluted_http.url, evaluted_http.headers, evaluted_http.options])
+    new_state = if http.check != nil do
       # Find the number of function arguments(:arity)
-      case Keyword.get(Function.info(option.check), :arity) do
+      case Keyword.get(Function.info(http.check), :arity) do
         1 ->
-          _ = option.check.(result)
+          _ = http.check.(result)
           state
-        2 -> option.check.(result, state)
+        2 -> http.check.(result, state)
         _ -> raise "check function must accept one or two arguments"
       end
     end

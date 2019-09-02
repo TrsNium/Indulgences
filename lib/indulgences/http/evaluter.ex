@@ -1,16 +1,16 @@
 
 
-defmodule Indulgences.Http.RequestOptions.Evaluter do
-  alias Indulgences.Http.RequestOptions
+defmodule Indulgences.Http.Evaluter do
+  alias Indulgences.Http
 
-  def evalute_request_option(%RequestOptions{}=option, %{}=state) do
-    evaluted_url = evalute_url(option.url, state)
-    evaluted_headers = Enum.reduce(option.headers, [],
+  def evalute_http(%Http{}=http, %{}=state) do
+    evaluted_url = evalute_url(http.url, state)
+    evaluted_headers = Enum.reduce(http.headers, [],
       fn({key, value}, acc) ->
         acc ++ [evalute_header({key, value}, state)]
       end)
 
-    option
+    http
     |> Map.put(:url, evaluted_url)
     |> Map.put(:headers, evaluted_headers)
   end

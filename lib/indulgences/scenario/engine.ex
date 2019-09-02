@@ -7,9 +7,9 @@ defmodule Indulgences.Scenario.Engine do
     nil
   end
 
-  def execute([%Indulgences.Http.RequestOptions{}=option|options], state) do
-    new_state = Indulgences.Http.Engine.execute(option, state)
-    execute(options, new_state)
+  def execute([%Indulgences.Http{}=http|instructions], state) do
+    new_state = Indulgences.Http.Engine.execute(http, state)
+    execute(instructions, new_state)
   end
 
   def execute_scenario(%Scenario{}=scenario) do
