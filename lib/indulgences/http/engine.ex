@@ -1,12 +1,10 @@
 
-defmodule Indulgences.Engine do
+defmodule Indulgences.Http.Engine do
   alias Indulgences.Scenario
   alias Indulgences.Http.RequestOptions
   alias Indulgences.Http.RequestOptions.Evaluter
 
-  def execute([], _), do: nil
-
-  def execute([%RequestOptions{}=option | options], %{}=state) do
+  def execute(%RequestOptions{}=option, %{}=state) do
     evaluted_option = Evaluter.evalute_request_option(option, state)
     result = apply(HTTPoison, evaluted_option.method, [evaluted_option.url, evaluted_option.headers, evaluted_option.options])
     new_state = if option.check != nil do
@@ -19,12 +17,6 @@ defmodule Indulgences.Engine do
         _ -> raise "check function must accept one or two arguments"
       end
     end
-    execute(options, new_state)
-  end
-
-  def exute_scenario(%Scenario{}=scenario) do
-    state = %{}
-    processes = scenario.instruction.()
-    execute processes, state
+    new_state
   end
 end
