@@ -24,21 +24,21 @@ defmodule IndulgencesTest do
   test "flexible scenario execute engine " do
     test_scenario = Indulgences.Scenario.new("test_scenario",
       fn ->
-        Indulgences.Http.get("https://www.google.com")
+        Indulgences.Http.get("http://localhost")
         |> Indulgences.Http.set_header("hoge", "huga")
         |> Indulgences.Http.check(
             fn(%HTTPoison.Response{}=response, %{}=state)->
-              assert response.status_code == 200
+              Indulgences.Http.is_status(response, 404)
               state
               |> Map.put(:body, response.body)
             end)
-        |> Indulgences.Http.get("https://www.google.com")
-        |> Indulgences.Http.set_header("key",
+        |> Indulgences.Http.get("http://www.google.com")
+        |> Indulgences.Http.set_header("huga",
             fn(state)->
               Map.get(state, :body)
             end)
       end)
-    Indulgences.Scenario.Engine.execute_scenario(test_scenario)
+    IO.puts inspect Indulgences.Scenario.Engine.execute_scenario(test_scenario)
   end
 
   test "request_option update headers" do

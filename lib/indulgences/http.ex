@@ -4,7 +4,7 @@ defmodule Indulgences.Http do
   @compile if Mix.env == :test, do: :export_all
   defstruct method: nil, url: nil, headers: [], options: [], check: nil
 
-  def get(_ \\[], url , headers \\ [], options \\ []) do
+  def get(url , headers \\ [], options \\ []) do
     [%__MODULE__{method: :get!, url: url, headers: headers, options: options}]
   end
 
@@ -12,7 +12,7 @@ defmodule Indulgences.Http do
     other_options ++ [%__MODULE__{method: :get!, url: url, headers: headers, options: options}]
   end
 
-  def post(_ \\[], url, headers \\ [], options \\ []) do
+  def post(url, headers \\ [], options \\ []) do
     [%__MODULE__{method: :post!, url: url, headers: headers, options: options}]
   end
 
@@ -34,6 +34,18 @@ defmodule Indulgences.Http do
 
   def check([options|%__MODULE__{}=option], check_fun) do
     options ++ [update_check(option, check_fun)]
+  end
+
+  def is_status(%HTTPoison.Response{}=response, desired_status_code) when is_integer(desired_status_code) do
+    if response.status_code != desired_status_code do
+      raise "status code is desired #{desired_status_code}, but got #{response.status_code}"
+    end
+  end
+
+  def is_status(%HTTPoison.Response{}=response, desired_status_codes) when is_list(desired_status_codes) do
+    if Enum.member?(desired_status_codes, response.status_code) do
+      raise "status code is desired in #{inspect desired_status_codes}, but got #{response.status_code}"
+    end
   end
 
   defp update_header(%__MODULE__{}=option, key, value) do

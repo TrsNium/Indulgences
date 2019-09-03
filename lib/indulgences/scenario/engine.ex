@@ -2,18 +2,37 @@
 defmodule Indulgences.Scenario.Engine do
   alias Indulgences.Scenario
 
-  def execute([], _) do
-    # may be return time, to calculate exuecutin time.
-    nil
+  defmacrop next(instructions, reports, do: block) do
+    quote do
+      start_time = Time.utc_now
+      try do
+        new_state = unquote(block)
+        report = {:ok, execution_time(start_time, Time.utc_now)}
+        execute(unquote(instructions), new_state, unquote(reports) ++ [report])
+      rescue
+        error -> report = {:ko, execution_time(start_time, Time.utc_now)}
+                 _ = IO.puts "errororororor"
+                 execute([], nil, unquote(reports) ++ [report])
+      end
+    end
   end
 
-  def execute([%Indulgences.Http{}=http|instructions], state) do
-    new_state = Indulgences.Http.Engine.execute(http, state)
-    execute(instructions, new_state)
+  defp execution_time(start_time, end_time) do
+    Time.diff(end_time, start_time, :microsecond)
+  end
+
+  def execute([], _, reports) do
+    reports
+  end
+
+  def execute([%Indulgences.Http{}=http|instructions], state, reports) do
+    next(instructions, reports) do
+      Indulgences.Http.Engine.execute(http, state)
+    end
   end
 
   def execute_scenario(%Scenario{}=scenario) do
-    instructions = scenario.instruction.()
-    execute(instructions, %{})
+    instructions = scenario.instructions.()
+    execute(instructions, %{}, [])
   end
 end
