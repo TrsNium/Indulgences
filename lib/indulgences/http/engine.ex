@@ -5,7 +5,11 @@ defmodule Indulgences.Http.Engine do
 
   def execute(%Http{}=http, %{}=state) do
     evaluted_http = Evaluter.evalute_http(http, state)
-    result = apply(HTTPoison, evaluted_http.method, [evaluted_http.url, evaluted_http.headers, evaluted_http.options])
+    result = case evaluted_http.method do
+      :get! -> apply(HTTPoison, evaluted_http.method, [evaluted_http.url, evaluted_http.headers, evaluted_http.options])
+      :post! -> apply(HTTPoison, evaluted_http.method, [evaluted_http.url, evaluted_http.body, evaluted_http.headers, evaluted_http.options])
+    end
+
     new_state = if http.check != nil do
       # Find the number of function arguments(:arity)
       case Keyword.get(Function.info(http.check), :arity) do

@@ -13,12 +13,12 @@ defmodule IndulgencesTest do
         |> Indulgences.Http.set_header("hoge", "huga")
         |> Indulgences.Http.check(
           fn(%HTTPoison.Response{}=response, %{}=state)->
-            assert response.status_code == 200
+            Indulgences.Http.is_status(response, 404)
             state
             |> Map.put(:body, response.body)
           end)
       end)
-    Indulgences.Scenario.Engine.execute_scenario(test_scenario)
+    IO.puts inspect Indulgences.Scenario.Engine.execute_scenario(test_scenario)
   end
 
   test "flexible scenario execute engine " do

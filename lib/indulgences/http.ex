@@ -2,38 +2,38 @@
 
 defmodule Indulgences.Http do
   @compile if Mix.env == :test, do: :export_all
-  defstruct method: nil, url: nil, headers: [], options: [], check: nil
+  defstruct method: nil, url: nil, body: nil, headers: [], options: [], check: nil
 
-  def get(url , headers \\ [], options \\ []) do
-    [%__MODULE__{method: :get!, url: url, headers: headers, options: options}]
+  def get(url) do
+    [%__MODULE__{method: :get!, url: url}]
   end
 
-  def get(other_options, url, headers, options) do
-    other_options ++ [%__MODULE__{method: :get!, url: url, headers: headers, options: options}]
+  def get(others, url) when is_list(others) do
+    [others|%__MODULE__{method: :get!, url: url}]
   end
 
-  def post(url, headers \\ [], options \\ []) do
-    [%__MODULE__{method: :post!, url: url, headers: headers, options: options}]
+  def post(url, body) do
+    [%__MODULE__{method: :post!, url: url, body: body}]
   end
 
-  def post(other_options, url, headers, options) do
-    other_options ++ [%__MODULE__{method: :post!, url: url, headers: headers, options: options}]
+  def post(others, url, body) do
+    [others|%__MODULE__{method: :post!, url: url, body: body}]
   end
 
-  def set_header([%__MODULE__{}=option], key, value) do
-    [update_header(option, key, value)]
+  def set_header([%__MODULE__{}=http], key, value) do
+    [update_header(http, key, value)]
   end
 
-  def set_header([options|%__MODULE__{}=option], key, value) do
-    options ++ [update_header(option, key, value)]
+  def set_header([others|%__MODULE__{}=http], key, value) do
+    List.flatten(others, [update_header(http, key, value)])
   end
 
-  def check([%__MODULE__{}=option], check_fun) do
-    [update_check(option, check_fun)]
+  def check([%__MODULE__{}=http], check_fun) do
+    [update_check(http, check_fun)]
   end
 
-  def check([options|%__MODULE__{}=option], check_fun) do
-    options ++ [update_check(option, check_fun)]
+  def check([others|%__MODULE__{}=http], check_fun) do
+    List.flatten(others, [update_check(http, check_fun)])
   end
 
   def is_status(%HTTPoison.Response{}=response, desired_status_code) when is_integer(desired_status_code) do
@@ -48,16 +48,16 @@ defmodule Indulgences.Http do
     end
   end
 
-  defp update_header(%__MODULE__{}=option, key, value) do
-    headers = option.headers
+  defp update_header(%__MODULE__{}=http, key, value) do
+    headers = http.headers
     new_headers = case Enum.find_index(headers, fn {exist_key, _} -> exist_key == key end) do
       idx when is_integer(idx)-> List.delete_at(headers, idx) ++ [{key, value}]
       _ -> headers ++ [{key, value}]
     end
-    Map.put(option, :headers, new_headers)
+    Map.put(http, :headers, new_headers)
   end
 
-  defp update_check(%__MODULE__{}=option, check) do
-    Map.put(option, :check, check)
+  defp update_check(%__MODULE__{}=http, check) do
+    Map.put(http, :check, check)
   end
 end

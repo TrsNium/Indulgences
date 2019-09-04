@@ -11,7 +11,6 @@ defmodule Indulgences.Scenario.Engine do
         execute(unquote(instructions), new_state, unquote(reports) ++ [report])
       rescue
         error -> report = {:ko, execution_time(start_time, Time.utc_now)}
-                 _ = IO.puts "errororororor"
                  execute([], nil, unquote(reports) ++ [report])
       end
     end
