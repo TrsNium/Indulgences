@@ -2,7 +2,7 @@
 
 defmodule Indulgences.Http do
   @compile if Mix.env == :test, do: :export_all
-  defstruct method: nil, url: nil, body: nil, headers: [], options: [], check: nil
+  defstruct method: nil, url: nil, body: "", headers: [], options: [], check: nil
 
   def get(url) do
     [%__MODULE__{method: :get!, url: url}]

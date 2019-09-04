@@ -23,8 +23,6 @@ defmodule Indulgences.Http.Evaluter do
 
   defp evalute(string, _) when is_binary(string), do: string
 
-  defp evalute(nil, _), do: nil
-
   defp evalute(_, _), do: raise "'url'`s type is must be string or function`"
 
   defp evalute_header({key, value}, state) do
