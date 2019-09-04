@@ -1,4 +1,5 @@
 # Indulgences
+![badge](https://action-badges.now.sh/JasonEtco/action-badges?workflow=test)
 
 **TODO: Add description**
 
