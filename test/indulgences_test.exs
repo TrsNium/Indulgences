@@ -9,13 +9,11 @@ defmodule IndulgencesTest do
   test "basic scenario execute engine " do
     test_scenario = Indulgences.Scenario.new("test_scenario",
       fn ->
-        Indulgences.Http.get("https://www.google.com")
+        Indulgences.Http.get("https://localhost")
         |> Indulgences.Http.set_header("hoge", "huga")
         |> Indulgences.Http.check(
-          fn(%HTTPoison.Response{}=response, %{}=state)->
+          fn(%HTTPoison.Response{}=response)->
             Indulgences.Http.is_status(response, 404)
-            state
-            |> Map.put(:body, response.body)
           end)
       end)
     IO.puts inspect Indulgences.Scenario.Engine.execute_scenario(test_scenario)
