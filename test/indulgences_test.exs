@@ -26,7 +26,7 @@ defmodule IndulgencesTest do
         |> Indulgences.Http.set_header("hoge", "huga")
         |> Indulgences.Http.check(
             fn(%HTTPoison.Response{}=response, %{}=state)->
-              Indulgences.Http.is_status(response, 404)
+              Indulgences.Http.is_status(response, 200)
               state
               |> Map.put(:body, response.body)
             end)

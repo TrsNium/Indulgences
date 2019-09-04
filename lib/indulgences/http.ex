@@ -29,6 +29,7 @@ defmodule Indulgences.Http do
   end
 
   #TODO: implement evalute options function
+  # ref. https://hexdocs.pm/httpoison/HTTPoison.Request.html
   def set_option([%__MODULE__{}=http], options) do
     [http]
   end
