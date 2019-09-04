@@ -28,6 +28,15 @@ defmodule Indulgences.Http do
     List.flatten(others, [update_header(http, key, value)])
   end
 
+  #TODO: implement evalute options function
+  def set_option([%__MODULE__{}=http], options) do
+    [http]
+  end
+
+  def set_option([others|%__MODULE__{}=http], options) do
+    List.flatten(others, [http])
+  end
+
   def check([%__MODULE__{}=http], check_fun) do
     [update_check(http, check_fun)]
   end
