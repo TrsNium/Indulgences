@@ -9,7 +9,8 @@ defmodule IndulgencesTest do
   test "basic scenario execute engine " do
     test_scenario = Indulgences.Scenario.new("test_scenario",
       fn ->
-        Indulgences.Http.get("https://localhost")
+        Indulgences.Http.new("Test Local Request")
+        |> Indulgences.Http.get("https://localhost")
         |> Indulgences.Http.set_header("hoge", "huga")
         |> Indulgences.Http.check(
           fn(%HTTPoison.Response{}=response)->
@@ -22,7 +23,8 @@ defmodule IndulgencesTest do
   test "flexible scenario execute engine " do
     test_scenario = Indulgences.Scenario.new("test_scenario",
       fn ->
-        Indulgences.Http.get("http://localhost")
+        Indulgences.Http.new("Test Local Request")
+        |>Indulgences.Http.get("http://localhost")
         |> Indulgences.Http.set_header("hoge", "huga")
         |> Indulgences.Http.check(
             fn(%HTTPoison.Response{}=response, %{}=state)->
@@ -30,6 +32,7 @@ defmodule IndulgencesTest do
               state
               |> Map.put(:body, response.body)
             end)
+        |>Indulgences.Http.new("Test Google Request")
         |> Indulgences.Http.get("http://www.google.com")
         |> Indulgences.Http.set_header("huga",
             fn(state)->

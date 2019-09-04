@@ -2,22 +2,30 @@
 
 defmodule Indulgences.Http do
   @compile if Mix.env == :test, do: :export_all
-  defstruct method: nil, url: nil, body: "", headers: [], options: [], check: nil
+  defstruct request_name: nil, method: nil, url: nil, body: "", headers: [], options: [], check: nil
 
-  def get(url) do
-    [%__MODULE__{method: :get!, url: url}]
+  def new(request_name) do
+    [%__MODULE__{request_name: request_name}]
   end
 
-  def get(others, url) when is_list(others) do
-    [others|%__MODULE__{method: :get!, url: url}]
+  def new(others, request_name) do
+    List.flatten(others, [%__MODULE__{request_name: request_name}])
   end
 
-  def post(url, body) do
-    [%__MODULE__{method: :post!, url: url, body: body}]
+  def get([%__MODULE__{}=http], url) do
+    [update_url_and_method_and_body(http, url, :get!)]
   end
 
-  def post(others, url, body) do
-    [others|%__MODULE__{method: :post!, url: url, body: body}]
+  def get([others|%__MODULE__{}=http], url) do
+    List.flatten(others, [update_url_and_method_and_body(http, url, :get!)])
+  end
+
+  def post([%__MODULE__{}=http], url, body) do
+    [update_url_and_method_and_body(http, url, :post!, body)]
+  end
+
+  def post([others|%__MODULE__{}=http], url, body) do
+    List.flatten(others, [update_url_and_method_and_body(http, url, :post!, body)])
   end
 
   def set_header([%__MODULE__{}=http], key, value) do
@@ -56,6 +64,13 @@ defmodule Indulgences.Http do
     if Enum.member?(desired_status_codes, response.status_code) do
       raise "status code is desired in #{inspect desired_status_codes}, but got #{response.status_code}"
     end
+  end
+
+  defp update_url_and_method_and_body(%__MODULE__{}=http, url, method, body \\ "") do
+    http
+    |> Map.put(:method, method)
+    |> Map.put(:url, url)
+    |> Map.put(:body, body)
   end
 
   defp update_header(%__MODULE__{}=http, key, value) do
