@@ -42,7 +42,7 @@ defmodule IndulgencesTest do
     IO.puts inspect Indulgences.Scenario.Engine.execute_scenario(test_scenario)
   end
 
-  test "scenario execute with activation" do
+  test "execute scenario with activation" do
     Indulgences.Scenario.new("test_scenario",
       fn ->
         Indulgences.Http.new("Test Local Request")
@@ -60,7 +60,6 @@ defmodule IndulgencesTest do
         Indulgences.Activation.constant_users_per_sec(100, 10)
       end)
     |> Indulgences.Simulation.start
-
   end
 
   test "request_option update headers" do
