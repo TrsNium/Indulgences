@@ -2,7 +2,6 @@ defmodule Indulgences.Scenario do
   defstruct name: nil, description: "No description", instructions: nil
 
   alias Indulgences.Simulation
-  require Indulgences.Activation
 
   def new(name, processes) do
     %__MODULE__{}

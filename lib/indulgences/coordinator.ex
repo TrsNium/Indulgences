@@ -1,25 +1,26 @@
 
 
 defmodule Indulgences.Coordinator do
-  use GenServer
-  defstruct request: nil, instruction_destination: nil
+  alias Indulgences.{Simulation, Activation}
 
-  def new(request, instruction_destination) do
-    %__MODULE__{}
-    |> Map.put(:request, request)
-    |> Map.put(:instruction_destination, instruction_destination)
+  def start(%Simulation{}=simulation) do
+    execute(simulation)
   end
 
-  def start(%__MODULE__{}=opts) do
-    # TODO: send instruction whhich is http request to other nodes
+  defp execute(%Simulation{activation: []}=_simulation) do
+    # TODO: generate report
+    nil
   end
 
-  def start_link(opts) do
-    GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+  defp execute(%Simulation{activation: [%Activation{}=activation|others], scenario: scenario, configure: nil}=_simulation) do
+    case activation.method do
+      :nothing -> Indulgences.Activation.Nothing.Engine.execute(activation, scenario)
+      :constant -> Indulgences.Activation.Constant.Engine.execute(activation, scenario, Node.self)
+    end
+    execute(%Simulation{activation: others, scenario: scenario, configure: nil})
   end
 
-  @impl true
-  def init(opts) do
-    {:ok, opts}
+  defp execute(%Simulation{activation: [activation|others], scenario: scenario, configure: configure}=_simulation) do
+
   end
 end

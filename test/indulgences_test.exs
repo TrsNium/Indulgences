@@ -42,6 +42,27 @@ defmodule IndulgencesTest do
     IO.puts inspect Indulgences.Scenario.Engine.execute_scenario(test_scenario)
   end
 
+  test "scenario execute with activation" do
+    Indulgences.Scenario.new("test_scenario",
+      fn ->
+        Indulgences.Http.new("Test Local Request")
+        |> Indulgences.Http.get("http://localhost")
+        |> Indulgences.Http.set_header("hoge", "huga")
+        |> Indulgences.Http.check(
+            fn(%HTTPoison.Response{}=response, %{}=state)->
+              Indulgences.Http.is_status(response, 200)
+              state
+              |> Map.put(:body, response.body)
+            end)
+      end)
+    |> Indulgences.Scenario.inject(
+      fn ->
+        Indulgences.Activation.constant_users_per_sec(100, 10)
+      end)
+    |> Indulgences.Simulation.start
+
+  end
+
   test "request_option update headers" do
     test_request_option =  %Indulgences.Http{headers: [{"hoge", "huga"}]}
     desired1 = %Indulgences.Http{headers: [{"hoge", "hugahuga"}]}

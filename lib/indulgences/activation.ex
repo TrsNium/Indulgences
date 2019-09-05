@@ -5,7 +5,7 @@ defmodule Indulgences.Activation do
     [%__MODULE__{duration: duration, users: 0, method: :nothing}]
   end
 
-  def nothing(activations, duration) do
+  def nothing(activations, duration) when is_list(activations) do
     activations ++ [%__MODULE__{duration: duration, users: 0, method: :nothing}]
   end
 
@@ -13,7 +13,7 @@ defmodule Indulgences.Activation do
     [%__MODULE__{duration: 0, users: users, method: :at_once}]
   end
 
-  def at_once(activations, users) do
+  def at_once(activations, users) when is_list(activations) do
     activations ++ [%__MODULE__{duration: 0, users: users, method: :at_once}]
   end
 
@@ -21,7 +21,7 @@ defmodule Indulgences.Activation do
     [%__MODULE__{duration: duration, users: users, method: :constant}]
   end
 
-  def constant_users_per_sec(activations, duration, users) do
+  def constant_users_per_sec(activations, duration, users) when is_list(activations) do
     activations ++ [%__MODULE__{duration: duration, users: users, method: :constant}]
   end
 end
