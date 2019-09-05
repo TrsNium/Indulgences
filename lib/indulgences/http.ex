@@ -4,36 +4,40 @@ defmodule Indulgences.Http do
   @compile if Mix.env == :test, do: :export_all
   defstruct request_name: nil, method: nil, url: nil, body: "", headers: [], options: [], check: nil
 
+  defp chain_http(others, %__MODULE__{}=http) do
+    List.flatten([others], [http])
+  end
+
   def new(request_name) do
     [%__MODULE__{request_name: request_name}]
   end
 
   def new(others, request_name) do
-    List.flatten(others, [%__MODULE__{request_name: request_name}])
+    chain_http(others, %__MODULE__{request_name: request_name})
   end
 
   def get([%__MODULE__{}=http], url) do
     [update_url_and_method_and_body(http, url, :get!)]
   end
 
-  def get([others|%__MODULE__{}=http], url) do
-    List.flatten(others, [update_url_and_method_and_body(http, url, :get!)])
+  def get([others|[%__MODULE__{}=http]], url) do
+    chain_http(others, update_url_and_method_and_body(http, url, :get!))
   end
 
   def post([%__MODULE__{}=http], url, body) do
     [update_url_and_method_and_body(http, url, :post!, body)]
   end
 
-  def post([others|%__MODULE__{}=http], url, body) do
-    List.flatten(others, [update_url_and_method_and_body(http, url, :post!, body)])
+  def post([others|[%__MODULE__{}=http]], url, body) do
+    chain_http(others, update_url_and_method_and_body(http, url, :post!, body))
   end
 
   def set_header([%__MODULE__{}=http], key, value) do
     [update_header(http, key, value)]
   end
 
-  def set_header([others|%__MODULE__{}=http], key, value) do
-    List.flatten(others, [update_header(http, key, value)])
+  def set_header([others|[%__MODULE__{}=http]], key, value) do
+    chain_http(others, update_header(http, key, value))
   end
 
   #TODO: implement evalute options function
@@ -42,7 +46,7 @@ defmodule Indulgences.Http do
     [http]
   end
 
-  def set_option([others|%__MODULE__{}=http], options) do
+  def set_option([others|[%__MODULE__{}=http]], options) do
     List.flatten(others, [http])
   end
 
@@ -50,8 +54,8 @@ defmodule Indulgences.Http do
     [update_check(http, check_fun)]
   end
 
-  def check([others|%__MODULE__{}=http], check_fun) do
-    List.flatten(others, [update_check(http, check_fun)])
+  def check([others|[%__MODULE__{}=http]], check_fun) do
+    chain_http(others, update_check(http, check_fun))
   end
 
   def is_status(%HTTPoison.Response{}=response, desired_status_code) when is_integer(desired_status_code) do
