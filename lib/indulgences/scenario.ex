@@ -17,7 +17,7 @@ defmodule Indulgences.Scenario do
   end
 
   def inject(%__MODULE__{}=scenario, activation) do
-      Simulation.new(scenario, evalute_attribute(activation))
+    Simulation.new(scenario, evalute_attribute(activation))
   end
 
   defp evalute_attribute(attribute) do

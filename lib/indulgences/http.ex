@@ -2,18 +2,18 @@
 
 defmodule Indulgences.Http do
   @compile if Mix.env == :test, do: :export_all
-  defstruct request_name: nil, method: nil, url: nil, body: "", headers: [], options: [], check: nil
+  defstruct name: nil, method: nil, url: nil, body: "", headers: [], options: [], check: nil
 
   defp chain_http(others, %__MODULE__{}=http) do
     List.flatten([others], [http])
   end
 
   def new(request_name) do
-    [%__MODULE__{request_name: request_name}]
+    [%__MODULE__{name: request_name}]
   end
 
   def new(others, request_name) do
-    chain_http(others, %__MODULE__{request_name: request_name})
+    chain_http(others, %__MODULE__{name: request_name})
   end
 
   def get([%__MODULE__{}=http], url) do
