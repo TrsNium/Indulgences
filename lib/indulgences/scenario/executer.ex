@@ -2,16 +2,15 @@
 defmodule Indulgences.Scenario.Executer do
   alias Indulgences.Scenario
 
-  defmacrop next(instructions, reports, do: block) do
+  defmacrop execute_and_next(instructions, reports, do: block) do
     quote do
-      start_time = Time.utc_now
       try do
-        new_state = unquote(block)
-        report = {:ok, execution_time(start_time, Time.utc_now)}
+        {start_time, end_time, new_state} = unquote(block)
+        report = {:ok, start_time, end_time, execution_time(start_time, end_time)}
         execute(unquote(instructions), new_state, unquote(reports) ++ [report])
-      rescue
-        error -> report = {:ko, execution_time(start_time, Time.utc_now)}
-                 execute([], nil, unquote(reports) ++ [report])
+      catch
+        {start_time, end_time, reason} -> report = {:ko, start_time, end_time, execution_time(start_time, end_time), reason}
+                                          execute([], nil, unquote(reports) ++ [report])
       end
     end
   end
@@ -25,7 +24,7 @@ defmodule Indulgences.Scenario.Executer do
   end
 
   def execute([%Indulgences.Http{}=http|instructions], state, reports) do
-    next(instructions, reports) do
+    execute_and_next(instructions, reports) do
       Indulgences.Http.Engine.execute(http, state)
     end
   end
