@@ -17,7 +17,7 @@ defmodule IndulgencesTest do
             Indulgences.Http.is_status(response, 404)
           end)
       end)
-    IO.puts inspect Indulgences.Scenario.Engine.execute_scenario(test_scenario)
+    IO.puts inspect Indulgences.Scenario.Executer.execute_scenario(test_scenario)
   end
 
   test "flexible scenario execute engine " do
@@ -39,7 +39,7 @@ defmodule IndulgencesTest do
               Map.get(state, :body)
             end)
       end)
-    IO.puts inspect Indulgences.Scenario.Engine.execute_scenario(test_scenario)
+    IO.puts inspect Indulgences.Scenario.Executer.execute_scenario(test_scenario)
   end
 
   test "execute scenario with activation" do

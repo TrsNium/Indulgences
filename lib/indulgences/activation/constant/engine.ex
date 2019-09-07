@@ -22,7 +22,7 @@ defmodule Indulgences.Activation.Constant.Engine do
     updated_done_users= case desired_done_users > done_users do
       true -> _ = Task.start(
                 fn ->
-                  send_report(master, Indulgences.Scenario.Engine.execute_scenario(scenario))
+                  send_report(master, Indulgences.Scenario.Executer.execute_scenario(scenario))
                 end)
               done_users + 1
       false -> done_users

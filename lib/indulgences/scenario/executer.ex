@@ -1,5 +1,5 @@
 
-defmodule Indulgences.Scenario.Engine do
+defmodule Indulgences.Scenario.Executer do
   alias Indulgences.Scenario
 
   defmacrop next(instructions, reports, do: block) do
