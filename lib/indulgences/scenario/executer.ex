@@ -30,7 +30,7 @@ defmodule Indulgences.Scenario.Executer do
   end
 
   def execute_scenario(%Scenario{}=scenario) do
-    instructions = scenario.instructions.()
+    instructions = scenario.instructions
     execute(instructions, %{}, [])
   end
 end

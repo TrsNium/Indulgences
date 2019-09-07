@@ -3,24 +3,27 @@ defmodule Indulgences.Scenario do
 
   alias Indulgences.Simulation
 
-  def new(name, processes) do
+  def new(name, instructions) do
     %__MODULE__{}
     |> Map.put(:name, name)
-    |> Map.put(:instructions, processes)
+    |> Map.put(:instructions, evalute_attribute(instructions))
   end
 
-  def new(name, description, processes) do
+  def new(name, description, instructions) do
     %__MODULE__{}
     |> Map.put(:name, name)
     |> Map.put(:description, description)
-    |> Map.put(:instructions, processes)
+    |> Map.put(:instructions, evalute_attribute(instructions))
   end
 
-  def inject(%__MODULE__{}=scenario, activation) when is_function(activation) do
-      Simulation.new(scenario, activation.())
+  def inject(%__MODULE__{}=scenario, activation) do
+      Simulation.new(scenario, evalute_attribute(activation))
   end
 
-  def inject(%__MODULE__{}=scenario, activation) when is_list(activation) do
-      Simulation.new(scenario, activation)
+  defp evalute_attribute(attribute) do
+    cond do
+      is_list(attribute) -> attribute
+      is_function(attribute) -> attribute.()
+    end
   end
 end
