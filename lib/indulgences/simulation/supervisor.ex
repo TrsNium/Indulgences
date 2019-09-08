@@ -3,6 +3,10 @@ defmodule Indulgences.Simulation.Supervisor do
   use GenServer
   require Logger
 
+  def receive_report(report) do
+    insert_report(report)
+  end
+
   def receive_report(report, _from) do
     insert_report(report)
   end
@@ -10,8 +14,9 @@ defmodule Indulgences.Simulation.Supervisor do
   defp insert_report(report) do
     instructions_name = GenServer.call(__MODULE__, :instructions_name)
     instructions_report = Enum.zip([report, instructions_name])
-    IO.puts inspect instructions_report
   end
+
+  defp is_finished_
 
   @impl true
   def handle_call(:instructions_name, _from, instructions_name) do
