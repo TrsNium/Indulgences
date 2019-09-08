@@ -2,10 +2,6 @@ defmodule IndulgencesTest do
   use ExUnit.Case
   doctest Indulgences
 
-  test "greets the world" do
-    assert Indulgences.hello() == :world
-  end
-
   test "basic scenario execute engine " do
     test_scenario = Indulgences.Scenario.new("test_scenario",
       fn ->
