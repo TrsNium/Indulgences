@@ -55,7 +55,6 @@ defmodule IndulgencesTest do
       fn ->
         Indulgences.Activation.constant_users_per_sec(100, 10)
       end)
-    |> Indulgences.Simulation.start
   end
 
   test "request_option update headers" do

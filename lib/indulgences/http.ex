@@ -66,7 +66,7 @@ defmodule Indulgences.Http do
 
   def is_status(%HTTPoison.Response{}=response, desired_status_codes) when is_list(desired_status_codes) do
     if Enum.member?(desired_status_codes, response.status_code) do
-      raise "status code is desired in #{inspect desired_status_codes}, but got #{response.status_code}"
+      throw "status code #{response.status_code}"
     end
   end
 

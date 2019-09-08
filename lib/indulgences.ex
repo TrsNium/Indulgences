@@ -14,9 +14,7 @@ defmodule Indulgences do
 
   @callback activation() :: simulation_environment()
 
-  defmacro __using__(opts) do
-    scenario_function = Keyword.get(opts, :scenario, :scenario)
-    activation_function = Keyword.get(opts, :activation, :activation)
+  defmacro __using__(_opts) do
     caller = __CALLER__.module
 
     quote location: :keep do
@@ -35,8 +33,8 @@ defmodule Indulgences do
         scenario_description = get_attribute(attributes, :scenario_description, "None")
         simulation_config = get_attribute(attributes, :simulation_config, nil)
 
-        scenario = apply(unquote(caller), unquote(scenario_function), [])
-        activation = apply(unquote(caller), unquote(activation_function), [])
+        scenario = apply(unquote(caller), :scenario, [])
+        activation = apply(unquote(caller), :activation, [])
         scenario = Indulgences.Scenario.new(
           scenario_title,
           scenario_description,

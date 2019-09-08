@@ -18,15 +18,19 @@ defmodule Indulgences.Http.Engine do
     end
 
     new_state = if http.check != nil do
-      # Find the number of function arguments(:arity)
-      case Keyword.get(Function.info(http.check), :arity) do
-        1 ->
-          _ = http.check.(result)
-          state
-        2 -> http.check.(result, state)
-        _ -> raise "check function must accept one or two arguments"
+      try do
+        # Find the number of function arguments(:arity)
+        case Keyword.get(Function.info(http.check), :arity) do
+          1 ->
+            _ = http.check.(result)
+            state
+          2 -> http.check.(result, state)
+          _ -> raise "check function must accept one or two arguments"
+        end
+      catch
+        error -> {start_time, end_time, error}
       end
     end
-    {start_time, end_time,new_state}
+    {start_time, end_time, new_state}
   end
 end

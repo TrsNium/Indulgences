@@ -16,6 +16,11 @@ defmodule Indulgences.Simulation.Supervisor do
     instructions_report = Enum.zip([report, instructions_name])
   end
 
+  #TODO
+  def is_finished() do
+
+  end
+
   @impl true
   def handle_call(:instructions_name, _from, instructions_name) do
     {:reply, instructions_name, instructions_name}
