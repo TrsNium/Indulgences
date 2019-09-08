@@ -3,16 +3,28 @@ defmodule Indulgences.Simulation.Supervisor do
   use GenServer
   require Logger
 
-  def receive_report(report, from) do
-    Logger.info("#{inspect from}: receive report #{inspect report}")
+  def receive_report(report, _from) do
+    insert_report(report)
   end
 
-  def start_link(scenario) do
+  defp insert_report(report) do
+    instructions_name = GenServer.call(__MODULE__, :instructions_name)
+    instructions_report = Enum.zip([report, instructions_name])
+    IO.puts inspect instructions_report
+  end
+
+  @impl true
+  def handle_call(:instructions_name, _from, instructions_name) do
+    {:reply, instructions_name, instructions_name}
+  end
+
+  def start_link(%Indulgences.Scenario{}=scenario) do
     GenServer.start_link(__MODULE__, scenario, name: __MODULE__)
   end
 
+  @impl true
   def init(%Indulgences.Scenario{}=scenario) do
-    instructions_count = for instruct <- scenario.instructions ,do: {instruct.name, 0}
-    {:ok, instructions_count}
+    instructions_name = for instruct <- scenario.instructions ,do: instruct.name
+    {:ok, instructions_name}
   end
 end

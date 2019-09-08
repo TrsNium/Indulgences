@@ -14,7 +14,13 @@ defmodule Indulgences.Simulation do
   end
 
   defp start_simulation_supervisor(%__MODULE__{}=simulation) do
-    GenServer.start_link(Indulgences.Simulation.Supervisor, simulation.scenario)
+    child = [
+        %{
+          id: Indulgences.Simulation.Supervisor,
+          start: {Indulgences.Simulation.Supervisor, :start_link, [simulation.scenario]}
+        }
+    ]
+    {:ok, _pid} = Supervisor.start_link(child, strategy: :one_for_one)
   end
 
   def start(%__MODULE__{}=simulation) do
