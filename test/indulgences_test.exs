@@ -53,8 +53,9 @@ defmodule IndulgencesTest do
       end)
     |> Indulgences.Scenario.inject(
       fn ->
-        Indulgences.Activation.constant_users_per_sec(100, 10)
+        Indulgences.Activation.constant_users_per_sec(100, 50)
       end)
+    |> Indulgences.Simulation.start
   end
 
   test "request_option update headers" do

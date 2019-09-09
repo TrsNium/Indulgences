@@ -6,7 +6,7 @@ defmodule Indulgences.Activation.Constant.Engine do
   alias Indulgences.Scenario
 
   def execute(%Activation{}=activation, %Scenario{}=scenario, master) do
-    end_time = Time.add(Time.utc_now, activation.duration)
+    end_time = Time.add(Time.utc_now, activation.duration, :second)
     total_users= activation.users*activation.duration
     exec(0, total_users, activation.duration, end_time, scenario, master)
   end
@@ -16,8 +16,8 @@ defmodule Indulgences.Activation.Constant.Engine do
   end
 
   defp exec(done_users, total_users, duration, end_time, %Scenario{}=scenario, master) do
-    progress_rate = Time.diff(end_time, Time.utc_now, :microsecond) / duration
-    desired_done_users = progress_rate * total_users
+    progress_rate = 1 - (Time.diff(end_time, Time.utc_now, :second) / duration)
+    desired_done_users = Kernel.trunc(progress_rate * total_users)
     # TODO: Execute scenario with background
     updated_done_users= case desired_done_users > done_users do
       true -> _ = Task.start(
