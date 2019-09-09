@@ -25,20 +25,27 @@ defmodule Indulgences.Simulation do
 
   def start(%__MODULE__{}=simulation) do
     start_simulation_supervisor(simulation)
-    Coordinator.start(simulation)
-    display_report_until_finished
+    # Run in background
+    Task.start(fn ->
+      Coordinator.start(simulation)
+    end)
+    display_report_until_finished(Time.utc_now, simulation)
   end
 
   def start(%__MODULE__{}=simulation, configure) do
     start_simulation_supervisor(simulation)
     configured_simulation = Map.put(simulation, :configure, configure)
-    Coordinator.start(configured_simulation)
-    display_report_until_finished
+    # Run in background
+    Task.start(fn ->
+      Coordinator.start(configured_simulation)
+    end)
+    display_report_until_finished(Time.utc_now, simulation)
   end
 
-  defp display_report_until_finished() do
+  defp display_report_until_finished(start_time, %__MODULE__{}=simulation) do
     if not Indulgences.Simulation.Supervisor.is_finished() do
-      
+      _ = Indulgences.Report.IO.display(start_time, simulation)
+      display_report_until_finished(start_time, simulation)
     end
   end
 end

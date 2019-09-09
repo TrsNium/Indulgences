@@ -38,8 +38,8 @@ defmodule Indulgences.Simulation.Supervisor do
   @impl true
   def init(%Indulgences.Simulation{}=simulation) do
     instructions_name = for instruct <- simulation.scenario.instructions ,do: instruct.name
-    activations_users = for activation <- simulation.activations ,do: activation.users
-    total_users = Enum.count(activations_users)
+    activations_users_in_duration = for activation <- simulation.activations ,do: activation.users * activation.duration
+    total_users = Enum.sum(activations_users_in_duration)
     {:ok, {total_users, instructions_name}}
   end
 end
