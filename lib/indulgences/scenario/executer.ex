@@ -6,7 +6,7 @@ defmodule Indulgences.Scenario.Executer do
     quote do
       try do
         {start_time, end_time, new_state} = unquote(block)
-        report = {:ok, start_time, end_time, execution_time(start_time, end_time)}
+        report = {:ok, start_time, end_time, execution_time(start_time, end_time), nil}
         execute(unquote(instructions), new_state, unquote(reports) ++ [report])
       catch
         {start_time, end_time, reason} -> report = {:ko, start_time, end_time, execution_time(start_time, end_time), reason}

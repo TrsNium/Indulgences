@@ -42,11 +42,11 @@ defmodule Indulgences.Http do
 
   #TODO: implement evalute options function
   # ref. https://hexdocs.pm/httpoison/HTTPoison.Request.html
-  def set_option([%__MODULE__{}=http], options) do
+  def set_option([%__MODULE__{}=http], _options) do
     [http]
   end
 
-  def set_option([others|[%__MODULE__{}=http]], options) do
+  def set_option([others|[%__MODULE__{}=http]], _options) do
     List.flatten(others, [http])
   end
 
