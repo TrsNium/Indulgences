@@ -5,7 +5,7 @@ defmodule Indulgences.Report do
     type: :ordered_set,
     autoincrement: true
 
-  def insert_report(instruction_name, status, reason, start_time, end_time, execution_time) do
+  def write(instruction_name, status, reason, start_time, end_time, execution_time) do
     Memento.transaction fn ->
       Memento.Query.write(%__MODULE__{
         instruction_name: instruction_name,
