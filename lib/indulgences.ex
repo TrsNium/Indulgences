@@ -33,16 +33,16 @@ defmodule Indulgences do
         scenario_description = get_attribute(attributes, :scenario_description, "None")
         simulation_config = get_attribute(attributes, :simulation_config, nil)
 
-        scenario = apply(unquote(caller), :scenario, [])
-        activation = apply(unquote(caller), :activation, [])
+        instructions = apply(unquote(caller), :scenario, [])
+        activations = apply(unquote(caller), :activation, [])
         scenario = Indulgences.Scenario.new(
           scenario_title,
           scenario_description,
-          scenario
+          instructions
         )
         simulation = Indulgences.Scenario.inject(
           scenario,
-          activation
+          activations
         )
         if simulation_config == nil do
           Indulgences.Simulation.start(simulation)
