@@ -44,6 +44,7 @@ defmodule Indulgences.Simulation do
 
   defp display_report_until_finished(start_time, %__MODULE__{}=simulation) do
     if not Indulgences.Simulation.Supervisor.is_finished() do
+      :timer.sleep(500)
       _ = Indulgences.Report.IO.display(start_time, simulation)
       display_report_until_finished(start_time, simulation)
     end
