@@ -7,7 +7,7 @@
 
 Basically you can use like following.
 ```elixir
-Indulgences.Scenario.new("test_scenario",
+Indulgences.Scenario.new("Test Scenario",
   fn ->
     Indulgences.Http.new("Test Local Request")
     |> Indulgences.Http.get("http://localhost")
@@ -37,6 +37,8 @@ When you wanna use indulgences on a module basis.
 ```elixir
 defmodule Test do
   use Indulgences
+
+  @scenario_title "Test Scenario"
 
   @impl true
   def scenario() do
