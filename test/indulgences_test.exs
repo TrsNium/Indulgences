@@ -43,12 +43,19 @@ defmodule IndulgencesTest do
       fn ->
         Indulgences.Http.new("Test Local Request")
         |> Indulgences.Http.get("http://localhost")
-        |> Indulgences.Http.set_header("hoge", "huga")
+        |> Indulgences.Http.set_header("header", "value")
         |> Indulgences.Http.check(
             fn(%HTTPoison.Response{}=response, %{}=state)->
               Indulgences.Http.is_status(response, 200)
               state
               |> Map.put(:body, response.body)
+            end)
+        Indulgences.Http.new("Test Local Request2")
+        |> Indulgences.Http.get("http://localhost")
+        |> Indulgences.Http.set_header("header-body", fn(state)->Map.get(state, :body)end)
+        |> Indulgences.Http.check(
+            fn(%HTTPoison.Response{}=response)->
+              Indulgences.Http.is_status(response, 200)
             end)
       end)
     |> Indulgences.Scenario.inject(

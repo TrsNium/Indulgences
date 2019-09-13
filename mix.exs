@@ -7,7 +7,11 @@ defmodule Indulgences.MixProject do
       version: "0.1.0",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package(),
+      description: description(),
+      name: "Indulgences",
+      source_url: "https://github.com/TrsNium/Indulgences"
     ]
   end
 
@@ -24,7 +28,21 @@ defmodule Indulgences.MixProject do
     [
       {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
       {:httpoison, "~> 1.5"},
-      {:memento, "~> 0.3.1"}
+      {:memento, "~> 0.3.1"},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+    ]
+  end
+
+  defp description() do
+    "Distributed load test framework"
+  end
+
+  defp package() do
+    [
+      name: "indulgences",
+      files: ~w(lib mix.exs README* LICENSE*),
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/TrsNium/Indulgences"}
     ]
   end
 end
