@@ -22,6 +22,7 @@ defmodule Indulgences.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
       {:httpoison, "~> 1.5"},
       {:memento, "~> 0.3.1"}
     ]
