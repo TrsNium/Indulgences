@@ -33,7 +33,7 @@ Indulgences.Scenario.new("test_scenario",
 |> Indulgences.Simulation.start
 ```
 
-When you wanna use indulgences from module.
+When you wanna use indulgences on a module basis.
 ```elixir
 defmodule Test do
   use Indulgences
