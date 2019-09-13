@@ -1,7 +1,9 @@
 # Indulgences
 ![badge](https://action-badges.now.sh/TrsNium/Indulgences?workflow=test)
 
-**TODO: Add description**
+### Work In Progress
+- Display the result on stdout
+- Distribute the scenario to each node
 
 ## Usage
 
@@ -76,4 +78,5 @@ end
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/indulgences](https://hexdocs.pm/indulgences).
+
 
