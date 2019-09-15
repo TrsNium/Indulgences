@@ -24,4 +24,18 @@ defmodule Indulgences.Report do
     end
     Enum.count(rows)
   end
+
+  def ok_count do
+    rows = Memento.transaction! fn ->
+      Memento.Query.select(__MODULE__, {:==, :status, :ok})
+    end
+    Enum.count(rows)
+  end
+
+  def ko_count do
+    rows = Memento.transaction! fn ->
+      Memento.Query.select(__MODULE__, {:==, :status, :ko})
+    end
+    Enum.count(rows)
+  end
 end
