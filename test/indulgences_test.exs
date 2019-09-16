@@ -81,6 +81,7 @@ defmodule IndulgencesTest do
     Indulgences.Report.clear()
 
     simulation_configure = Indulgences.Simulation.Config.new(%{Node.self() => 1})
+
     Indulgences.Scenario.new(
       "test_scenario",
       fn ->
