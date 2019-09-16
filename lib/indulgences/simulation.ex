@@ -32,7 +32,7 @@ defmodule Indulgences.Simulation do
     display_report_until_finished(Time.utc_now(), simulation)
   end
 
-  def start(%__MODULE__{} = simulation, configure) do
+  def start(%__MODULE__{} = simulation, %Indulgences.Simulation.Config{} = configure) do
     start_simulation_supervisor(simulation)
     configured_simulation = Map.put(simulation, :configure, configure)
     # Run in background

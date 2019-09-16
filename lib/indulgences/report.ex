@@ -40,24 +40,32 @@ defmodule Indulgences.Report do
   end
 
   def min_response_time(status) do
-    get_rows(status)
-    |> Enum.map(fn(%__MODULE__{}=report) -> report.execution_time end)
-    |> Enum.min
+    min =
+      get_rows(status)
+      |> Enum.map(fn %__MODULE__{} = report -> report.execution_time end)
+      |> Enum.min()
+
+    trunc(min / 1000)
   end
 
   def max_response_time(status) do
-    get_rows(status)
-    |> Enum.map(fn %__MODULE__{}=report -> report.execution_time end)
-    |> Enum.max
+    max =
+      get_rows(status)
+      |> Enum.map(fn %__MODULE__{} = report -> report.execution_time end)
+      |> Enum.max()
+
+    trunc(max / 1000)
   end
 
   def mean_response_time(status) do
     rows = get_rows(status)
-    total_execution_time = rows
-    |> Enum.map(fn %__MODULE__{}=report -> report.execution_time end)
-    |> Enum.sum
-    IO.puts" #{inspect total_execution_time} #{inspect Enum.count rows}"
-    trunc(total_execution_time/Enum.count(rows))
+
+    total_execution_time =
+      rows
+      |> Enum.map(fn %__MODULE__{} = report -> report.execution_time end)
+      |> Enum.sum()
+
+    trunc(total_execution_time / Enum.count(rows) / 1000)
   end
 
   defp get_rows(status) do
