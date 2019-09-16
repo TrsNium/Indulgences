@@ -56,6 +56,7 @@ defmodule Indulgences.Report do
     total_execution_time = rows
     |> Enum.map(fn %__MODULE__{}=report -> report.execution_time end)
     |> Enum.sum
+    IO.puts" #{inspect total_execution_time} #{inspect Enum.count rows}"
     trunc(total_execution_time/Enum.count(rows))
   end
 
