@@ -5,6 +5,7 @@ defmodule Indulgences.Coordinator do
     execute(simulation)
   end
 
+
   defp execute(
          %Simulation{
            activations: [%Activation{} = activation | others],
@@ -36,8 +37,12 @@ defmodule Indulgences.Coordinator do
       execute_scenario_on_remote(users, activation, scenario)
     end)
 
-    :timer.sleep(activation.duration * 1000)
+    :timer.sleep(activation.duration)
     execute(%Simulation{activations: others, scenario: scenario, configure: configure})
+  end
+
+  defp execute(_) do
+    nil
   end
 
   defp execute_scenario_on_remote({dest, users}, activation, scenario) do
@@ -68,7 +73,7 @@ defmodule Indulgences.Coordinator do
   defp divide_user_along_ratio(total_users, configure) do
     initialized_users_per_nodes =
       configure.nodes_and_distribute_raito
-      |> Map.keys()
+      |> Map.keys
       |> Enum.reduce(%{}, fn key, acc -> Map.put(acc, key, 0) end)
 
     total_ratio =
@@ -76,13 +81,11 @@ defmodule Indulgences.Coordinator do
       |> Enum.sum()
 
     divided_users =
-      Map.keys(
-        initialized_users_per_nodes
+      Map.keys(initialized_users_per_nodes)
         |> Enum.reduce(initialized_users_per_nodes, fn key, acc ->
           ratio = Map.get(configure.nodes_and_distribute_raito, key) / total_ratio
           Map.put(acc, key, trunc(total_users * ratio))
         end)
-      )
 
     diff = total_users - Enum.sum(Map.values(divided_users))
 

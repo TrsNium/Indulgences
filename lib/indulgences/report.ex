@@ -80,4 +80,9 @@ defmodule Indulgences.Report do
       rows
     end
   end
+
+  def clear() do
+    Memento.Table.delete!(__MODULE__)
+    Memento.Table.create!(__MODULE__)
+  end
 end

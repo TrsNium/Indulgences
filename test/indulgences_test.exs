@@ -48,6 +48,8 @@ defmodule IndulgencesTest do
   end
 
   test "execute scenario with activation" do
+    Indulgences.Report.clear()
+
     Indulgences.Scenario.new(
       "test_scenario",
       fn ->
@@ -76,8 +78,9 @@ defmodule IndulgencesTest do
   end
 
   test "execute scenario with distributed activation" do
-    simulation_configure = Indulgences.Simulation.Config.new(%{Node.self: 1})
+    Indulgences.Report.clear()
 
+    simulation_configure = Indulgences.Simulation.Config.new(%{Node.self() => 1})
     Indulgences.Scenario.new(
       "test_scenario",
       fn ->
