@@ -1,11 +1,9 @@
-
-
 defmodule Indulgences.Application do
   use Application
 
   def start(_type, _args) do
     # Start Mnesia
-    Memento.start
+    Memento.start()
     Memento.Table.create!(Indulgences.Report)
 
     # Start TaskSupervisor

@@ -1,13 +1,12 @@
-
-
 defmodule Indulgences.Http.Evaluter do
   alias Indulgences.Http
 
-  def evalute_http(%Http{}=http, %{}=state) do
+  def evalute_http(%Http{} = http, %{} = state) do
     evaluted_url = evalute(http.url, state)
     evaluted_body = evalute(http.body, state)
-    evaluted_headers = Enum.reduce(http.headers, [],
-      fn({key, value}, acc) ->
+
+    evaluted_headers =
+      Enum.reduce(http.headers, [], fn {key, value}, acc ->
         acc ++ [evalute_header({key, value}, state)]
       end)
 
@@ -23,7 +22,7 @@ defmodule Indulgences.Http.Evaluter do
 
   defp evalute(string, _) when is_binary(string), do: string
 
-  defp evalute(_, _), do: raise "'url'`s type is must be string or function`"
+  defp evalute(_, _), do: raise("'url'`s type is must be string or function`")
 
   defp evalute_header({key, value}, state) do
     case {is_function(key), is_function(value)} do
@@ -33,5 +32,4 @@ defmodule Indulgences.Http.Evaluter do
       {false, false} -> {key, value}
     end
   end
-
 end

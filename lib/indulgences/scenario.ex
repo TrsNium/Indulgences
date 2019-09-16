@@ -16,7 +16,7 @@ defmodule Indulgences.Scenario do
     |> Map.put(:instructions, evalute_attribute(instructions))
   end
 
-  def inject(%__MODULE__{}=scenario, activation) do
+  def inject(%__MODULE__{} = scenario, activation) do
     Simulation.new(scenario, evalute_attribute(activation))
   end
 

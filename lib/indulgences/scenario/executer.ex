@@ -1,4 +1,3 @@
-
 defmodule Indulgences.Scenario.Executer do
   alias Indulgences.Scenario
 
@@ -9,8 +8,9 @@ defmodule Indulgences.Scenario.Executer do
         report = {:ok, start_time, end_time, execution_time(start_time, end_time), nil}
         execute(unquote(instructions), new_state, unquote(reports) ++ [report])
       catch
-        {start_time, end_time, reason} -> report = {:ko, start_time, end_time, execution_time(start_time, end_time), reason}
-                                          execute([], nil, unquote(reports) ++ [report])
+        {start_time, end_time, reason} ->
+          report = {:ko, start_time, end_time, execution_time(start_time, end_time), reason}
+          execute([], nil, unquote(reports) ++ [report])
       end
     end
   end
@@ -23,13 +23,13 @@ defmodule Indulgences.Scenario.Executer do
     reports
   end
 
-  def execute([%Indulgences.Http{}=http|instructions], state, reports) do
+  def execute([%Indulgences.Http{} = http | instructions], state, reports) do
     execute_and_next(instructions, reports) do
       Indulgences.Http.Engine.execute(http, state)
     end
   end
 
-  def execute_scenario(%Scenario{}=scenario) do
+  def execute_scenario(%Scenario{} = scenario) do
     instructions = scenario.instructions
     execute(instructions, %{}, [])
   end

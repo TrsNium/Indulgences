@@ -1,5 +1,4 @@
 defmodule Indulgences do
-
   @typedoc """
   This is a list of scenario instructions.
   """
@@ -21,9 +20,12 @@ defmodule Indulgences do
       @behaviour unquote(__MODULE__)
       defp get_attribute(attributes, attribute, default) do
         case Enum.find_index(attributes, fn {attribute_name, _} -> attribute_name == attribute end) do
-          idx when is_integer(idx) -> {_, attribute_value} = List.pop_at(attributes, idx)
+          idx when is_integer(idx) ->
+            {_, attribute_value} = List.pop_at(attributes, idx)
             attribute_value
-          _ -> default
+
+          _ ->
+            default
         end
       end
 
@@ -35,15 +37,20 @@ defmodule Indulgences do
 
         instructions = apply(unquote(caller), :scenario, [])
         activations = apply(unquote(caller), :activation, [])
-        scenario = Indulgences.Scenario.new(
-          scenario_title,
-          scenario_description,
-          instructions
-        )
-        simulation = Indulgences.Scenario.inject(
-          scenario,
-          activations
-        )
+
+        scenario =
+          Indulgences.Scenario.new(
+            scenario_title,
+            scenario_description,
+            instructions
+          )
+
+        simulation =
+          Indulgences.Scenario.inject(
+            scenario,
+            activations
+          )
+
         if simulation_config == nil do
           Indulgences.Simulation.start(simulation)
         else
