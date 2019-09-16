@@ -2,8 +2,7 @@
 ![badge](https://action-badges.now.sh/TrsNium/Indulgences?workflow=test)
 
 ### Work In Progress
-- Display the result on stdout
-- Distribute the scenario to each node
+- Output report in html format
 
 ## Usage
 
