@@ -70,9 +70,39 @@ defmodule IndulgencesTest do
       end
     )
     |> Indulgences.Scenario.inject(fn ->
-      Indulgences.Activation.constant_users_per_sec(100, 10)
+      Indulgences.Activation.constant_users_per_sec(100, 3)
     end)
     |> Indulgences.Simulation.start()
+  end
+
+  test "execute scenario with distributed activation" do
+    simulation_configure = Indulgences.Simulation.Config.new(%{Node.self: 1})
+
+    Indulgences.Scenario.new(
+      "test_scenario",
+      fn ->
+        Indulgences.Http.new("Test Local Request")
+        |> Indulgences.Http.get("http://localhost")
+        |> Indulgences.Http.set_header("header", "value")
+        |> Indulgences.Http.check(fn %HTTPoison.Response{} = response, %{} = state ->
+          Indulgences.Http.is_status(response, 200)
+
+          state
+          |> Map.put(:body, response.body)
+        end)
+
+        Indulgences.Http.new("Test Local Request2")
+        |> Indulgences.Http.get("http://localhost")
+        |> Indulgences.Http.set_header("header-body", fn state -> Map.get(state, :body) end)
+        |> Indulgences.Http.check(fn %HTTPoison.Response{} = response ->
+          Indulgences.Http.is_status(response, 200)
+        end)
+      end
+    )
+    |> Indulgences.Scenario.inject(fn ->
+      Indulgences.Activation.constant_users_per_sec(100, 10)
+    end)
+    |> Indulgences.Simulation.start(simulation_configure)
   end
 
   test "request_option update headers" do
