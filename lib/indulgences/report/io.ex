@@ -17,10 +17,10 @@ defmodule Indulgences.Report.IO do
         progress_rate
       end
 
-    waiting_user = total_users - Indulgences.Report.get_instruction_row_count(instruction_name)
-    #
-    # IO.puts "#{progress_rate} #{waiting_user} #{Indulgences.Report.get_instruction_row_count(instruction_name)} #{total_users}"
+    [ok_min_resp, ok_mean_resp, ok_max_resp] = format_report_terms([Report.min_response_time(:ok), Report.max_response_time(:ok), Report.mean_response_time(:ok)])
+    [ko_min_resp, ko_mean_resp, ko_max_resp] = format_report_terms([Report.min_response_time(:ko), Report.max_response_time(:ko), Report.mean_response_time(:ko)])
 
+    waiting_user = total_users - Indulgences.Report.get_instruction_row_count(instruction_name)
     progress_resume_num = trunc(Float.floor(progress_rate * 10)) * 3
     progress_suspended_num = 30 - progress_resume_num
 
@@ -36,12 +36,12 @@ defmodule Indulgences.Report.IO do
       IO.ANSI.default_background()
     }
     #{IO.ANSI.cursor_down()}#{padding()}
-    #{IO.ANSI.cursor_down()}#{padding()} number_of_requests :ok :ko #{Report.ok_count()} #{
-      Report.ko_count()
+    #{IO.ANSI.cursor_down()}#{padding()} number_of_requests :ok :ko #{Report.count_rows(:ok)} #{
+      Report.count_rows(:ko)
     }
-    #{IO.ANSI.cursor_down()}#{padding()} min_response_time
-    #{IO.ANSI.cursor_down()}#{padding()} max_response_time
-    #{IO.ANSI.cursor_down()}#{padding()} mean_response_time
+    #{IO.ANSI.cursor_down()}#{padding()} min_response_time          #{ok_min_resp} #{ko_min_resp}
+    #{IO.ANSI.cursor_down()}#{padding()} max_response_time          #{ok_max_resp} #{ko_max_resp}
+    #{IO.ANSI.cursor_down()}#{padding()} mean_response_time         #{ok_mean_resp} #{ko_mean_resp}
     #{padding}#{IO.ANSI.green()}#{progress_bar}
 
     """)
@@ -64,5 +64,26 @@ defmodule Indulgences.Report.IO do
       end
 
     Enum.join(List.duplicate(string, length))
+  end
+
+  defp format_report_terms(report_terms) do
+    converted_string = report_terms
+                       |> Enum.map(&(Integer.to_string(&1)))
+
+    max_length = converted_string
+                |> Enum.map(&(String.length &1))
+                |> Enum.max
+
+    formated_report_terms(converted_string, max_length, [])
+  end
+
+  defp formated_report_terms([], _, report) do
+    IO.puts inspect report
+    report
+  end
+
+  defp formated_report_terms([term| others], max_length, report) do
+    padding = max_length - String.length(term)
+    formated_report_terms(others, max_length, report ++ [String.pad_leading(term, padding, " ")])
   end
 end

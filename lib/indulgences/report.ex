@@ -35,21 +35,40 @@ defmodule Indulgences.Report do
     Enum.count(rows)
   end
 
-  def ok_count do
-    rows =
-      Memento.transaction!(fn ->
-        Memento.Query.select(__MODULE__, {:==, :status, :ok})
-      end)
-
-    Enum.count(rows)
+  def count_rows(status) do
+    Enum.count(get_rows(status))
   end
 
-  def ko_count do
+  def min_response_time(status) do
+    get_rows(status)
+    |> Enum.map(fn(%__MODULE__{}=report) -> report.execution_time end)
+    |> Enum.min
+  end
+
+  def max_response_time(status) do
+    get_rows(status)
+    |> Enum.map(fn %__MODULE__{}=report -> report.execution_time end)
+    |> Enum.max
+  end
+
+  def mean_response_time(status) do
+    rows = get_rows(status)
+    total_execution_time = rows
+    |> Enum.map(fn %__MODULE__{}=report -> report.execution_time end)
+    |> Enum.sum
+    trunc(total_execution_time/Enum.count(rows))
+  end
+
+  defp get_rows(status) do
     rows =
       Memento.transaction!(fn ->
-        Memento.Query.select(__MODULE__, {:==, :status, :ko})
+        Memento.Query.select(__MODULE__, {:==, :status, status})
       end)
 
-    Enum.count(rows)
+    if rows == [] do
+      [%__MODULE__{execution_time: 0}]
+    else
+      rows
+    end
   end
 end
