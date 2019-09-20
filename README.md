@@ -19,7 +19,7 @@ Indulgences.Scenario.new("Test Scenario",
           state
           |> Map.put(:body, response.body)
         end)
-    Indulgences.Http.new("Test Local Request2")
+    |> Indulgences.Http.new("Test Local Request2")
     |> Indulgences.Http.get("http://localhost")
     |> Indulgences.Http.set_header("set-header-body", fn(state)->Map.get(state, :body)end)
     |> Indulgences.Http.check(
