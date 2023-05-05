@@ -27,7 +27,7 @@ defmodule Indulgences.MixProject do
   defp deps do
     [
       {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
-      {:httpoison, "~> 1.5"},
+      {:httpoison, "~> 2.1"},
       {:memento, "~> 0.3.1"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
